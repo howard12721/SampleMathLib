@@ -73,3 +73,9 @@ fun <A, B> allMappings(dom: Set<A>, codom: Set<B>): Set<(A) -> B> =
             }
         }.toSet()
     }.map { MappableFunction(codom, it) }.toSet()
+
+fun <T> Set<T>.identityMapping(): MappableFunction<T, T> =
+    MappableFunction(
+        this,
+        this
+    ) { it }
