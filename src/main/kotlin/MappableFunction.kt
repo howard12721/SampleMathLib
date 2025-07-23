@@ -1,10 +1,20 @@
 /**
  * 写像を表すクラス
  */
-data class MappableFunction<A, B>(val mapping: Map<A, B>, val codom: Set<B>)
+data class MappableFunction<A, B>(val dom: Set<A>, val codom: Set<B>, val mapping: Map<A, B>)
     : (A) -> B
 {
-    val dom: Set<A> get() = mapping.keys
+
+    init {
+        require(dom == mapping.keys)
+        require(mapping.values.all { it in codom })
+    }
+
+    constructor(codom: Set<B>, mapping: Map<A, B>)
+            : this(mapping.keys, codom, mapping)
+
+    constructor(dom: Set<A>, codom: Set<B>, mapping: (A) -> B)
+            : this(dom, codom, dom.associateWith(mapping))
 
     init {
         require(codom.containsAll(mapping.values))
@@ -34,7 +44,7 @@ data class MappableFunction<A, B>(val mapping: Map<A, B>, val codom: Set<B>)
             : MappableFunction<C, B> {
         require(other.codom == this.dom)
         val newMapping = other.mapping.mapValues { this(it.value) }
-        return MappableFunction(newMapping, this.codom)
+        return MappableFunction(this.codom, newMapping)
     }
 
     fun isInjective(): Boolean = mapping.values.toSet().size == mapping.size
@@ -46,8 +56,8 @@ data class MappableFunction<A, B>(val mapping: Map<A, B>, val codom: Set<B>)
     fun inverse(): MappableFunction<B, A> {
         require(isBijective())
         return MappableFunction(
-            mapping.entries.associate { (key, value) -> value to key },
-            dom
+            dom,
+            mapping.entries.associate { (key, value) -> value to key }
         )
     }
 
@@ -62,4 +72,4 @@ fun <A, B> allMappings(dom: Set<A>, codom: Set<B>): Set<(A) -> B> =
                 existing + (k to v)
             }
         }.toSet()
-    }.map { MappableFunction(it, codom) }.toSet()
+    }.map { MappableFunction(codom, it) }.toSet()
