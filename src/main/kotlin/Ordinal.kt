@@ -1,3 +1,4 @@
+import Ordinal.Companion.fromTerms
 import kotlin.math.max
 
 operator fun Int.plus(other: Ordinal): Ordinal = Ordinal.fromInt(this) + other

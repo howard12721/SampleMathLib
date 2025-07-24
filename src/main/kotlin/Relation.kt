@@ -91,7 +91,8 @@ data class Endorelation<A>(val a: Set<A>, val rel: Set<Pair<A, A>>) {
             for (i in this.a) {
                 for (j in this.a) {
                     if (closureRel.contains(i to k)
-                        && closureRel.contains(k to j)) {
+                        && closureRel.contains(k to j)
+                    ) {
                         closureRel.add(i to j)
                     }
                 }

@@ -1,9 +1,7 @@
 /**
  * 写像を表すクラス
  */
-data class MappableFunction<A, B>(val dom: Set<A>, val codom: Set<B>, val mapping: Map<A, B>)
-    : (A) -> B
-{
+data class MappableFunction<A, B>(val dom: Set<A>, val codom: Set<B>, val mapping: Map<A, B>) : (A) -> B {
 
     init {
         require(dom == mapping.keys)
